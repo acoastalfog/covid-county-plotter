@@ -82,6 +82,30 @@ class countyDataPlotter:
 
         return dataMovingAverage 
 
+    def setTwoPaneFormatPerPane (self, ax, axDaily):
+        ax.set_title(self.county + ", " + self.state + " Cumulative Cases and Cases/Day", fontsize = 8)
+        ax.set_ylabel("Cumulative Cases", fontsize = 10)
+
+        # Will use these to smooth out the x data for any called county
+        locator = mdates.AutoDateLocator(maxticks = 10)
+        formatter = mdates.ConciseDateFormatter(locator)
+
+        # Ensure cumulative curve sits on top of secondary cutve
+        ax.set_zorder(10)
+        ax.patch.set_visible(False)
+
+        ax.set_ylim(bottom=0)
+
+        # Apply formatting after second axis
+        axDaily.xaxis.set_major_locator(locator)
+        axDaily.xaxis.set_major_formatter(formatter)
+        
+        # Only need to set the xlim on the second axis
+        axDaily.set_xlim(self.dateLims)
+        
+        # NYTimes data is sometimes a little ridiculous
+        axDaily.set_ylim(bottom=0)
+        
     def plotCasesAndDeathsTwoPanes (self, window):
         # Compute the moving average but just don't just truncate
         dailyCasesMovingAverage = self.convolutionMovingAverage(self.dailyCases, window)
@@ -89,76 +113,46 @@ class countyDataPlotter:
 
         # Start figure
         fig, ax = plt.subplots(2, 1, constrained_layout = True, figsize = (5, 6), dpi=300)
-        
-        # Will use these to smooth out the x data for any called county
-        locator = mdates.AutoDateLocator(maxticks = 10)
-        formatter = mdates.ConciseDateFormatter(locator)
-        
-        # Ax[0] is cases
-        ax[0].set_title(self.county + ", " + self.state + " Cumulative Cases and Cases/Day", fontsize = 8)
-        ax[0].set_ylabel("Cumulative Cases", fontsize = 10)
-        
         ax[0].plot(self.dates, self.cumulativeCases, '-', c='blue', lw=1.5)
         ax[0].plot(self.dates, self.cumulativeCases, '.', c='blue', lw=1.5)
-        
-        # Ensure cumulative curve sits on top of secondary cutve
-        ax[0].set_zorder(10)
-        ax[0].patch.set_visible(False)
 
-        ax[0].set_ylim(bottom=0)
+        ax[0].set_title(self.county + ", " + self.state + " Cumulative Cases and Cases/Day", fontsize = 8)
+        ax[0].set_ylabel("Cumulative Cases", fontsize = 10)
         
         axDaily0 = ax[0].twinx()
         axDaily0.bar(self.dates, self.dailyCases, color='orange', align='edge')
         axDaily0.plot(self.dates, dailyCasesMovingAverage, c='grey')
-        
-        # Apply formatting after second axis
-        axDaily0.xaxis.set_major_locator(locator)
-        axDaily0.xaxis.set_major_formatter(formatter)
+
         axDaily0.set_ylabel("Daily Cases", fontsize=10)
-        
-        # Only need to set the xlim on the second axis
-        axDaily0.set_xlim(self.dateLims)
-        
-        # NYTimes data is sometimes a little ridiculous
-        axDaily0.set_ylim(bottom=0)
-        
+
         # Custom legend
         convolutionLabel = str(window) + " Day Convolution"
         legendElements = [matplotlib.lines.Line2D([0], [0], color='b', marker='.', lw=1.5, label='Cumulative Cases'),                       matplotlib.lines.Line2D([0], [0], color='grey', lw=1.5, label=convolutionLabel)]
         ax[0].legend(handles=legendElements, fontsize=8)
+
+        # Common pane format options
+        self.setTwoPaneFormatPerPane(ax[0], axDaily0)
         
         # Ax[1] is deaths
-        ax[1].set_title(self.county + ", " + self.state + " Cumulative Deaths and Deaths/Day", fontsize=8)
-        ax[1].set_ylabel("Cumulative Deaths", fontsize=10)
-        
         ax[1].plot(self.dates, self.cumulativeDeaths, '-', c='blue', lw=1.5)
         ax[1].plot(self.dates, self.cumulativeDeaths, '.', c='blue', lw=1.5)
-        
-        # Ensure cumulative curve sits on top of secondary cutve
-        ax[1].set_zorder(10)
-        ax[1].patch.set_visible(False)
 
-        ax[1].set_ylim(bottom=0)
+        ax[1].set_title(self.county + ", " + self.state + " Cumulative Deaths and Deaths/Day", fontsize=8)
+        ax[1].set_ylabel("Cumulative Deaths", fontsize=10)
         
         axDaily1 = ax[1].twinx()
         axDaily1.bar(self.dates, self.dailyDeaths, color='orange', align='edge')
         axDaily1.plot(self.dates, dailyDeathsMovingAverage, c='grey')
-        
-        # Apply formatting after second axis
-        axDaily1.xaxis.set_major_locator(locator)
-        axDaily1.xaxis.set_major_formatter(formatter)
+
         axDaily1.set_ylabel("Daily Deaths", fontsize=10)
-        
-        # Only need to set the xlim on the second axis
-        axDaily1.set_xlim(self.dateLims)
-        
-        # NYTimes data is sometimes a little ridiculous
-        axDaily1.set_ylim(bottom=0)
         
         # Custom legend
         convolutionLabel = str(window) + " Day Convolution"
         legendElements = [matplotlib.lines.Line2D([0], [0], color='b', marker='.', lw=1.5, label='Cumulative Deaths'),                       matplotlib.lines.Line2D([0], [0], color='grey', lw=1.5, label=convolutionLabel)]
         ax[1].legend(handles=legendElements, fontsize=8)
+
+        # Common pane format options
+        self.setTwoPaneFormatPerPane(ax[1], axDaily1)
         
         # Save a figure
         if not os.path.exists('images'):
