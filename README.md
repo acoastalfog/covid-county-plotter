@@ -8,7 +8,7 @@ It's pretty easy to use.
 import county_plotter as cp
 
 westchester = cp.countyDataPlotter ("Westchester", "New York", "JHU")
-westchester.plotCasesAndDeaths (7)
+westchester.plotCasesAndDeathsTwoPanes (7)
 ```
 
 Takes county and state, and then you can select between the JHU or NYT live github data. JHU tends to be ahead. Parameter passed to the plotting function is the moving window size. And it just writes to a fixed format ```images``` folder.
