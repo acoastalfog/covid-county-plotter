@@ -17,6 +17,6 @@ It's all very hacky.
 
 If you want to add a new plot or feature, please feel free to throw me a PR.
 
-Here's an example of the only thing it does for my home county of Rockland.
+Here's an example of the only thing it does for my home county of Rockland. Doing pretty well!
 
-![Rockland][media/rockland.png]
+![Rockland](media/rockland.png)
