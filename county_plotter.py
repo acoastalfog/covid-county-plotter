@@ -83,9 +83,6 @@ class countyDataPlotter:
         return dataMovingAverage 
 
     def setTwoPaneFormatPerPane (self, ax, axDaily):
-        ax.set_title(self.county + ", " + self.state + " Cumulative Cases and Cases/Day", fontsize = 8)
-        ax.set_ylabel("Cumulative Cases", fontsize = 10)
-
         # Will use these to smooth out the x data for any called county
         locator = mdates.AutoDateLocator(maxticks = 10)
         formatter = mdates.ConciseDateFormatter(locator)
