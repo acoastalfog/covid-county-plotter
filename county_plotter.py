@@ -77,8 +77,9 @@ class countyDataPlotter:
         dataExtension = np.hstack([[0] * (window - 1), data])
 
         # This is a bit of a hack. Just screw around with the convolution window to fit depending on the window size.
+
         dataMovingAverage = \
-            np.convolve(dataExtension, weights)[window + (window - 7): -(window - (window - 5))]
+            np.convolve(dataExtension, weights)[window + (window - 8): -(window - (window - 6))]
 
         return dataMovingAverage 
 
