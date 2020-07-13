@@ -9,13 +9,16 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
+
 class countyDataPlotter:
-    def __init__ (self, county, state, dataType):
+    def __init__ (self, county, state, dataType, insertType = None):
 
         # County, state, and data type are static per instantiation
         self.county = county
         self.state = state
         self.dataType = dataType
+        self.insertType = insertType
 
         # Data type readers just grab lists of dates, cases, and deaths. Preprocessing in __init__
         if self.dataType == "NYT":
@@ -25,6 +28,14 @@ class countyDataPlotter:
         else:
             print ("Unknown data type, options are 'NYT' or 'JHU'.")
             sys.exit ()
+
+        # Should assert
+        if self.insertType:
+            if self.insertType == "right" or self.insertType == "left":
+                pass
+            else:
+                print ("Unknown insert type, options are 'right' or 'left'.")
+                sys.exit ()
             
         # Read data
         self.dates, self.cumulativeCases, self.cumulativeDeaths = readFunction ()
@@ -130,7 +141,37 @@ class countyDataPlotter:
 
         # Common pane format options
         self.setTwoPaneFormatPerPane(ax[0], axDaily0)
-        
+
+        if self.insertType:
+
+            # Optional inset with log daily data
+            axInset = plt.axes([0, 0, 1, 1])
+
+            if self.insertType == 'right':
+                ip = InsetPosition(ax[0], [0.55, 0.35, 0.4, 0.4])
+            elif self.insertType == 'left':
+                print ("'left' is not actually supported")
+                sys.exit()
+            axInset.set_axes_locator(ip)
+
+            axInset.bar(self.dates[-30:], self.dailyCases[-30:], color='orange', align='edge')
+            axInset.plot(self.dates[-30:], dailyCasesMovingAverage[-30:], c='grey')
+
+            # Will use these to smooth out the x data for any called county
+            locator = mdates.AutoDateLocator(maxticks = 6)
+            formatter = mdates.ConciseDateFormatter(locator)
+
+            # Apply formatting after second axis
+            axInset.xaxis.set_major_locator(locator)
+            axInset.xaxis.set_major_formatter(formatter)
+            
+            # Only need to set the xlim on the second axis
+            newDateLims = [self.dates[-30], self.dates[-1]]
+            axInset.set_xlim(newDateLims)
+            
+            # NYTimes data is sometimes a little ridiculous
+            axInset.set_ylim(bottom=0)
+
         # Ax[1] is deaths
         ax[1].plot(self.dates, self.cumulativeDeaths, '-', c='blue', lw=1.5)
         ax[1].plot(self.dates, self.cumulativeDeaths, '.', c='blue', lw=1.5)
@@ -151,6 +192,7 @@ class countyDataPlotter:
 
         # Common pane format options
         self.setTwoPaneFormatPerPane(ax[1], axDaily1)
+
         
         # Save a figure
         if not os.path.exists('images'):
