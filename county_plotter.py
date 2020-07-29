@@ -105,6 +105,8 @@ class countyDataPlotter:
 
         ax.set_ylim(bottom=0)
 
+        ax.tick_params(labelsize=8)
+
         # Apply formatting after second axis
         axDaily.xaxis.set_major_locator(locator)
         axDaily.xaxis.set_major_formatter(formatter)
@@ -114,6 +116,8 @@ class countyDataPlotter:
         
         # NYTimes data is sometimes a little ridiculous
         axDaily.set_ylim(bottom=0)
+
+        axDaily.tick_params(labelsize=8)
         
     def plotCasesAndDeathsTwoPanes (self, window):
         # Compute the moving average but just don't just truncate
@@ -126,24 +130,24 @@ class countyDataPlotter:
         ax[0].plot(self.dates, self.cumulativeCases, '.', c='blue', lw=1.5)
 
         ax[0].set_title(self.county + ", " + self.state + " Cumulative Cases and Cases/Day", fontsize = 8)
-        ax[0].set_ylabel("Cumulative Cases", fontsize = 10)
+        ax[0].set_ylabel("Cumulative Cases", fontsize = 8)
         
         axDaily0 = ax[0].twinx()
         axDaily0.bar(self.dates, self.dailyCases, color='orange', align='edge')
         axDaily0.plot(self.dates, dailyCasesMovingAverage, c='grey')
 
-        axDaily0.set_ylabel("Daily Cases", fontsize=10)
+        axDaily0.set_ylabel("Daily Cases", fontsize=8)
 
         # Custom legend
         convolutionLabel = str(window) + " Day Convolution"
-        legendElements = [matplotlib.lines.Line2D([0], [0], color='b', marker='.', lw=1.5, label='Cumulative Cases'),                       matplotlib.lines.Line2D([0], [0], color='grey', lw=1.5, label=convolutionLabel)]
-        ax[0].legend(handles=legendElements, fontsize=8)
+        legendElements = [matplotlib.lines.Line2D([0], [0], color='b', marker='.', lw=1.5, label='Cumulative Cases'), \
+                          matplotlib.lines.Line2D([0], [0], color='grey', lw=1.5, label=convolutionLabel)]
+        ax[0].legend(handles=legendElements, loc=2, fontsize=8)
 
         # Common pane format options
         self.setTwoPaneFormatPerPane(ax[0], axDaily0)
 
         if self.insertType:
-
             # Optional inset with log daily data
             axInset = plt.axes([0, 0, 1, 1])
 
@@ -172,18 +176,20 @@ class countyDataPlotter:
             # NYTimes data is sometimes a little ridiculous
             axInset.set_ylim(bottom=0)
 
+            axInset.tick_params(labelsize=8)
+
         # Ax[1] is deaths
         ax[1].plot(self.dates, self.cumulativeDeaths, '-', c='blue', lw=1.5)
         ax[1].plot(self.dates, self.cumulativeDeaths, '.', c='blue', lw=1.5)
 
         ax[1].set_title(self.county + ", " + self.state + " Cumulative Deaths and Deaths/Day", fontsize=8)
-        ax[1].set_ylabel("Cumulative Deaths", fontsize=10)
+        ax[1].set_ylabel("Cumulative Deaths", fontsize=8)
         
         axDaily1 = ax[1].twinx()
         axDaily1.bar(self.dates, self.dailyDeaths, color='orange', align='edge')
         axDaily1.plot(self.dates, dailyDeathsMovingAverage, c='grey')
 
-        axDaily1.set_ylabel("Daily Deaths", fontsize=10)
+        axDaily1.set_ylabel("Daily Deaths", fontsize=8)
         
         # Custom legend
         convolutionLabel = str(window) + " Day Convolution"
