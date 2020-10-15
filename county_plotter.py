@@ -152,7 +152,7 @@ class countyDataPlotter:
             axInset = plt.axes([0, 0, 1, 1])
 
             if self.insertType == 'right':
-                ip = InsetPosition(ax[0], [0.55, 0.35, 0.4, 0.4])
+                ip = InsetPosition(ax[0], [0.40, 0.25, 0.4, 0.4])
             elif self.insertType == 'left':
                 print ("'left' is not actually supported")
                 sys.exit()

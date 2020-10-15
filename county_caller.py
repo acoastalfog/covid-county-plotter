@@ -22,3 +22,9 @@ cookJHU.plotCasesAndDeathsTwoPanes (7)
 
 deschutesJHU = cp.countyDataPlotter ("Deschutes", "Oregon", "JHU")
 deschutesJHU.plotCasesAndDeathsTwoPanes (7)
+
+delawareJHU = cp.countyDataPlotter ("Delaware", "New York", "JHU")
+delawareJHU.plotCasesAndDeathsTwoPanes (7)
+
+otsegoJHU = cp.countyDataPlotter ("Otsego", "New York", "JHU")
+otsegoJHU.plotCasesAndDeathsTwoPanes (7)
